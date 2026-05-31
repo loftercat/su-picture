@@ -2,13 +2,18 @@ package com.su.supicturebackend.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.su.supicturebackend.constant.UserConstant;
+import com.su.supicturebackend.model.dto.UserQueryRequest;
+import com.su.supicturebackend.model.dto.UserUpdateRequest;
 import com.su.supicturebackend.model.enums.UserRoleEnum;
 import com.su.supicturebackend.exception.BusinessException;
 import com.su.supicturebackend.exception.ErrorCode;
+import com.su.supicturebackend.exception.ThrowUtils;
 import com.su.supicturebackend.model.entity.User;
 import com.su.supicturebackend.model.vo.LoginUserVO;
 import com.su.supicturebackend.model.vo.UserVO;
@@ -158,6 +163,79 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return Collections.emptyList();
         }
         return userList.stream().map(this::getUserVO).collect(Collectors.toList());
+    }
+
+    @Override
+    public QueryWrapper<User> getQueryWrapper(UserQueryRequest userQueryRequest) {
+        if (userQueryRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "请求参数为空");
+        }
+        Long id = userQueryRequest.getId();
+        String userName = userQueryRequest.getUserName();
+        String userAccount = userQueryRequest.getUserAccount();
+        String userProfile = userQueryRequest.getUserProfile();
+        String userRole = userQueryRequest.getUserRole();
+        String sortField = userQueryRequest.getSortField();
+        String sortOrder = userQueryRequest.getSortOrder();
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(ObjUtil.isNotNull(id), "id", id);
+        queryWrapper.eq(StrUtil.isNotBlank(userRole), "userRole", userRole);
+        queryWrapper.like(StrUtil.isNotBlank(userAccount), "userAccount", userAccount);
+        queryWrapper.like(StrUtil.isNotBlank(userName), "userName", userName);
+        queryWrapper.like(StrUtil.isNotBlank(userProfile), "userProfile", userProfile);
+        queryWrapper.orderBy(StrUtil.isNotEmpty(sortField), sortOrder.equals("ascend"), sortField);
+        return queryWrapper;
+    }
+
+    @Override
+    public Page<UserVO> listUserByPage(UserQueryRequest userQueryRequest) {
+        ThrowUtils.throwIf(userQueryRequest == null, ErrorCode.PARAMS_ERROR);
+        // 构建查询条件
+        QueryWrapper<User> queryWrapper = getQueryWrapper(userQueryRequest);
+        // 分页查询
+        Page<User> page = this.page(
+                new Page<>(userQueryRequest.getCurrent(), userQueryRequest.getPageSize()),
+                queryWrapper
+        );
+        // 转换为VO分页对象
+        Page<UserVO> voPage = new Page<>(page.getCurrent(), page.getSize(), page.getTotal());
+        voPage.setRecords(getUserVOList(page.getRecords()));
+        return voPage;
+    }
+
+    @Override
+    public boolean updateUser(UserUpdateRequest userUpdateRequest) {
+        // 1.校验参数
+        if (userUpdateRequest == null || userUpdateRequest.getId() == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
+        }
+        // 2.检查用户是否存在
+        User oldUser = this.getById(userUpdateRequest.getId());
+        if (oldUser == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR, "用户不存在");
+        }
+        // 3.校验用户角色是否合法
+        String userRole = userUpdateRequest.getUserRole();
+        if (StrUtil.isNotBlank(userRole)) {
+            UserRoleEnum roleEnum = UserRoleEnum.getEnumByValue(userRole);
+            if (roleEnum == null) {
+                throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户角色不合法");
+            }
+        }
+        // 4.校验用户昵称长度
+        String userName = userUpdateRequest.getUserName();
+        if (StrUtil.isNotBlank(userName) && userName.length() > 20) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户昵称过长");
+        }
+        // 5.校验用户简介长度
+        String userProfile = userUpdateRequest.getUserProfile();
+        if (StrUtil.isNotBlank(userProfile) && userProfile.length() > 200) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户简介过长");
+        }
+        // 6.更新用户信息
+        User user = new User();
+        BeanUtil.copyProperties(userUpdateRequest, user);
+        return this.updateById(user);
     }
 }
 

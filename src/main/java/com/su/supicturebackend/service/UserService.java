@@ -1,5 +1,9 @@
 package com.su.supicturebackend.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.su.supicturebackend.model.dto.UserQueryRequest;
+import com.su.supicturebackend.model.dto.UserUpdateRequest;
 import com.su.supicturebackend.model.vo.LoginUserVO;
 import com.su.supicturebackend.model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -74,4 +78,20 @@ public interface UserService extends IService<User> {
      * @return List<UserVO> 用户视图对象列表，通常包含用户的基本信息
      */
     List<UserVO> getUserVOList(List<User> userList);
+
+    QueryWrapper<User> getQueryWrapper(UserQueryRequest queryRequest);
+
+    /**
+     * 分页查询用户
+     * @param userQueryRequest 用户查询请求，包含查询条件和分页参数
+     * @return Page<UserVO> 分页用户视图对象
+     */
+    Page<UserVO> listUserByPage(UserQueryRequest userQueryRequest);
+
+    /**
+     * 更新用户信息
+     * @param userUpdateRequest 用户更新请求，包含要更新的用户ID及字段
+     * @return boolean 更新是否成功
+     */
+    boolean updateUser(UserUpdateRequest userUpdateRequest);
 }
