@@ -1,0 +1,35 @@
+server:
+  port: 8123
+  servlet:
+    context-path: /api
+spring:
+  application:
+    name: su-picture-backend
+    # 数据库配置
+  datasource:
+    url: jdbc:mysql://localhost:3306/su_picture
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+# MyBatis 配置
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    global-config:
+      db-config:
+        logic-delete-field: isDeleted # 全局逻辑删除字段名(isDeleted为实体类属性名称)
+        logic-delete-value: 1 # 逻辑已删除值。可选，默认值为 1
+        logic-not-delete-value: 0 # 逻辑未删除值。可选，默认值为 0
+#接口文档配置
+knife4j:
+  enable: true
+  openapi:
+    title: 接口文档
+    version: v1.0
+    group:
+      default:
+        group-name: 分组名称
+        api-rule: package
+        api-rule-resources:
+          - com.su.supicturebackend.controller
