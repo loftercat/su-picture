@@ -2,8 +2,8 @@ package com.su.supicturebackend.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.su.supicturebackend.model.dto.UserQueryRequest;
-import com.su.supicturebackend.model.dto.UserUpdateRequest;
+import com.su.supicturebackend.model.dto.user.UserQueryRequest;
+import com.su.supicturebackend.model.dto.user.UserUpdateRequest;
 import com.su.supicturebackend.model.vo.LoginUserVO;
 import com.su.supicturebackend.model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;

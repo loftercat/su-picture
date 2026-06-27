@@ -1,4 +1,4 @@
-package com.su.supicturebackend.model.dto;
+package com.su.supicturebackend.model.dto.user;
 
 import lombok.Data;
 

@@ -8,8 +8,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.su.supicturebackend.constant.UserConstant;
-import com.su.supicturebackend.model.dto.UserQueryRequest;
-import com.su.supicturebackend.model.dto.UserUpdateRequest;
+import com.su.supicturebackend.model.dto.user.UserQueryRequest;
+import com.su.supicturebackend.model.dto.user.UserUpdateRequest;
 import com.su.supicturebackend.model.enums.UserRoleEnum;
 import com.su.supicturebackend.exception.BusinessException;
 import com.su.supicturebackend.exception.ErrorCode;
@@ -25,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
