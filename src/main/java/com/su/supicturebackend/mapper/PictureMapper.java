@@ -1,7 +1,8 @@
 package com.su.supicturebackend.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import generator.domain.Picture;
+import com.su.supicturebackend.model.entity.Picture;
+
 
 /**
 * @author 83639

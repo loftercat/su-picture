@@ -1,9 +1,9 @@
 package com.su.supicturebackend.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import generator.domain.Picture;
-import generator.mapper.PictureMapper;
-import generator.service.PictureService;
+import com.su.supicturebackend.mapper.PictureMapper;
+import com.su.supicturebackend.model.entity.Picture;
+import com.su.supicturebackend.service.PictureService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 */
 @Service
 public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture>
-    implements PictureService{
+    implements PictureService {
 
 }
 

@@ -1,6 +1,7 @@
 package com.su.supicturebackend.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.su.supicturebackend.model.entity.Picture;
 
 /**
 * @author 83639
