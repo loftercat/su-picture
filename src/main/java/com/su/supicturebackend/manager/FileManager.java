@@ -49,7 +49,7 @@ public class FileManager {
         try {
             file = File.createTempFile(uploadPath, null);
             multipartFile.transferTo(file);
-            PutObjectResult putObjectResult = cosManager.putObject(uploadPath, file);
+            PutObjectResult putObjectResult = cosManager.putPictureObject(uploadPath, file);
             ImageInfo imageInfo = putObjectResult.getCiUploadResult().getOriginalInfo().getImageInfo();
 
             UploadPictureResult uploadPictureResult = new UploadPictureResult();
@@ -84,7 +84,7 @@ public class FileManager {
         ThrowUtils.throwIf(file.getSize() > ONE_Max, ErrorCode.PARAMS_ERROR, "图片大小超出限制");
         String fileSuffix = FileUtil.getSuffix(file.getOriginalFilename());
         List<String> imageType = Arrays.asList("jpg", "jpeg", "png", "webp");
-        ThrowUtils.throwIf(imageType.contains(fileSuffix), ErrorCode.PARAMS_ERROR, "图片格式不支持");
+        ThrowUtils.throwIf(!imageType.contains(fileSuffix), ErrorCode.PARAMS_ERROR, "图片格式不支持");
     }
 
 }
