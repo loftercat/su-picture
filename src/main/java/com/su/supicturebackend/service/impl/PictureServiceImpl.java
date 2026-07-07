@@ -11,6 +11,7 @@ import com.su.supicturebackend.model.entity.User;
 import com.su.supicturebackend.model.file.UploadPictureResult;
 import com.su.supicturebackend.model.vo.PictureVO;
 import com.su.supicturebackend.service.PictureService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,6 +44,14 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture> impl
         String uploadPrefix = String.format("public/%s", loginUser.getId());
         UploadPictureResult uploadPictureResult = fileManager.uploadFile(multipartFile, uploadPrefix);
         //构造入库
+        Picture picture = getPicture(loginUser, uploadPictureResult, id);
+        boolean result = this.saveOrUpdate(picture);
+        ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR, "图片上传失败，数据库操作失败");
+        return PictureVO.objToVo(picture);
+    }
+
+    @NotNull
+    private Picture getPicture(User loginUser, UploadPictureResult uploadPictureResult, Long id) {
         Picture picture = new Picture();
         picture.setUrl(uploadPictureResult.getUrl());
         picture.setName(uploadPictureResult.getPicName());
@@ -53,9 +62,7 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture> impl
         picture.setPicFormat(uploadPictureResult.getPicFormat());
         picture.setUserId(loginUser.getId());
         picture.setId(id);
-        boolean result = this.saveOrUpdate(picture);
-        ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR, "图片上传失败，数据库操作失败");
-        return PictureVO.objToVo(picture);
+        return picture;
     }
 }
 
