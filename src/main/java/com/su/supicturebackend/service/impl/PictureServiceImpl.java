@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 /**
  * @author 83639
@@ -61,7 +62,11 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture> impl
         picture.setPicScale(uploadPictureResult.getPicScale());
         picture.setPicFormat(uploadPictureResult.getPicFormat());
         picture.setUserId(loginUser.getId());
-        picture.setId(id);
+        if (id != null) {
+            //更新操作
+            picture.setId(id);
+            picture.setEditTime(new Date());
+        }
         return picture;
     }
 }
